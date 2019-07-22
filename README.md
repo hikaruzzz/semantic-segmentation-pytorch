@@ -17,5 +17,5 @@ run `CUDA_VISIBLE_DEVICES=0 python train.py`
 * learn rate,
 ## Result
 * day 7/22/2019 record, the mIoU can't increase over 35%.
-* ![score1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score1.png)
-* ![score2.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score2.png)
+* ![score1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score/score1.png)
+* ![score2.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score/score2.png)
