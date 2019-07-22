@@ -1,14 +1,19 @@
 import os
-import torch
 import numpy as np
 import scipy.misc as scipym
 import matplotlib.pyplot as plt
+import torch
+import warnings
+
 from torch.utils import data
-from torch.utils.data import DataLoader,Dataset
 
 
+# scipy  = 0.19.1
+warnings.filterwarnings("ignore")
+# ignore the scipy.misc.pilutil.py warming: futurewarning: from float to np.floating
 
-class Cityscapes_Loader(Dataset):
+
+class Cityscapes_Loader(data.Dataset):
     '''
     重构了Dataset里面的方法，其中__getitem__()是返回单个图像的，交由DataLoader进行batch size打包
     '''
@@ -29,6 +34,9 @@ class Cityscapes_Loader(Dataset):
         self.files_len = 0
         self.split = split
 
+        self.H = 512  # origin image shape / 2
+        self.W = 1024
+
         # leftimg8bit的目录为 root(包含/CityScapes) + leftimg8bit
         self.path_leftImg8bit_split = os.path.join(self.root,"leftImg8bit",self.split) #images_base
         self.path_gtFine_spilt = os.path.join(self.root,"gtFine",self.split) # annotations_base
@@ -36,8 +44,10 @@ class Cityscapes_Loader(Dataset):
         # files是整个leftImg8bit的目录树 [leftImg8bit--train/test/val--city_name--file_name]
         self.imgs_path_list = self.getFilesList(path_root)
         self.label_type = label_type
+        assert self.__len__() > 0, "Error: not found image in path = {}".format(self.root)
 
         # 合并class ，将一些类别合并成一个class（比如单车，汽车=》vehicle）,缩减classes数量，如现在是35 缩到 8个类
+        # 详细label的class目录，可以参考 label_changer.py的表格
         transform_classes = np.zeros(35, dtype=np.int)
         transform_classes[1:7] = 0
         transform_classes[7:11] = 1
@@ -83,6 +93,8 @@ class Cityscapes_Loader(Dataset):
         """__getitem__
 
         :param index:
+        :return img  img.shape = [3, H, W]
+        :return  label.shape=(H,W) , target.shape=(n_classes, H, W)
         """
         img_path = self.imgs_path_list[index]
         # 根据leftimg8bit的文件列表，从gtFine中找到对应名称的label image，
@@ -98,12 +110,31 @@ class Cityscapes_Loader(Dataset):
         assert img_path.split(os.sep)[-1][:15] == label_path.split(os.sep)[-1][:15], "!Error: not found image: {}".format(label_path)
         label = scipym.imread(label_path)
         label = self.reduceClasses(np.array(label, dtype=np.uint8))
-        #print("path={}, max={}".format(label_path,np.max(np.array(label))))
 
         if self.is_transform:
-            img, lbl = self.transform(img, label)
+            img, label = self.transform(img, label)
 
-        return img, label
+        # transform 方法
+        img = scipym.imresize(img, (self.H, self.W))  # uint8 with RGB mode
+        img = img[:,:,::-1]  # RGB  ->  BGR
+        img = np.array(img,dtype=float)
+        img -= self.mean_rgb
+        img = img / 255.
+        img = img.transpose([2,0,1])
+
+        label = label.astype(np.float64)
+        label = scipym.imresize(label, (self.H, self.W), "nearest", mode="F")
+        label = label.astype(np.int32)
+
+        target = np.zeros([self.n_classes, self.H, self.W],dtype=np.int32)
+        for c in range(self.n_classes):
+            target[c][label == c] = 1
+
+        img = torch.from_numpy(img).float()
+        label = torch.from_numpy(label).float()
+        target = torch.from_numpy(target).float()
+
+        return img, label, target  # label.shape=(H,W) , target.shape=(n_classes, H, W)
 
     def transform(self,img,lbl):
         '''
@@ -163,15 +194,15 @@ def forDebugOnly():
     split = "train"
     n_classes = 8
     c_loader = Cityscapes_Loader(path_root,split,n_classes,is_transform=False)
+    print("list len:",c_loader.__len__())
     trainloader = data.DataLoader(c_loader, batch_size=4, num_workers=0)
     for i, data_samples in enumerate(trainloader):
-        imgs, labels = data_samples
+        imgs, labels, target = data_samples
         plt.figure(i)
         plt.subplot(1,2,1)
-        plt.imshow(imgs[0])
+        plt.imshow(np.array(np.transpose(imgs[0],[1,2,0]),dtype=np.int))
         plt.subplot(1,2,2)
         plt.imshow(np.array(c_loader.index2color(labels[0]),dtype=np.int))
-        #plt.imshow(labels[0])
     plt.show()
 
 
