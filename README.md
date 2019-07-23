@@ -19,10 +19,10 @@ run `CUDA_VISIBLE_DEVICES=0 python train.py`
 * 
 ## Result
 * Result image predict, with mIoU:?? , val loss:??  
-![score1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score/score1.png)  
-![score2.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score/score2.png)
+![score1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score1.png)  
+![score2.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score2.png)
 * The trend of Loss and mIoU in 100 epochs  
-![loss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score/loss1.png)
+![loss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/loss1.png)
 ## Conclusion
 * The different class group may result in different accuracy, for example, person class and sky class fuse together may lead to stop reducing of Loss, and mIoU will stay in a level no matter how epochs train.Just like the fig4 show.  
-![stoploss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/edit/master/score/stoploss1.png)
+![stoploss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/stoploss1.png)
