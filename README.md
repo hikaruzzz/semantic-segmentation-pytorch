@@ -5,6 +5,7 @@
 * criterion : torch.nn.BCEWithLogitsLoss
 * hyper params: reference config.py
 * about the class num reduce part, please reference label_changer.py, where show how some label class mix to one class(such as car,bike,truck to vehicle)
+* if need to change the class num distribution, please rewrite code in cityscape_loader.py(Cityscapes_Loader. __init__ ,transform_classes)
 ## How to Run
 * requirement list   
  CUDA    
