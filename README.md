@@ -29,6 +29,7 @@ run `python demo.py`
 * Result image predict, with mIoU:?? , val loss:??  
 ![score1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score1.png)  
 ![score2.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score2.png)
+![score3.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score3.png)
 * The trend of Loss and mIoU in 100 epochs  
 ![loss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/loss1.png)
 ## Conclusion
