@@ -1,7 +1,7 @@
 # Semantic Segmentation Task, implemented by pytorch, with CityScapes dataset
 ## Architecture
 * FCN with VGG (pretrain model from pytorch)
-* optimizer : option:['rmrprop','SGD']
+* optimizer : option:['Adam','rmrprop','SGD']
 * criterion : torch.nn.BCEWithLogitsLoss
 * hyper params: reference config.py
 * about the class num reduce part, please reference label_changer.py, where show how some label class mix to one class(such as car,bike,truck to vehicle)
