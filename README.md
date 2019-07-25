@@ -30,7 +30,7 @@ run `python demo.py`
 ![score1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score1.png)  
 ![score2.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score2.png)
 ![score3.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/score3.png)
-* The fig4 is the trend of Loss and mIoU within 100 epochs. We can see that after 47epochs the train_loss still decrease but val_loss begin increase, this would lead to overfitting, need to early stopping in this epoch.
+* The fig4 is the trend of Loss and mIoU within 100 epochs. We can see that after 42epochs(got best mIoU) the train_loss still decrease but val_loss begin increase, this would lead to overfitting, need to early stopping in this epoch.
 ![loss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/loss1.png)
 ## Conclusion
 * The different class group may result in different accuracy, for example, person class and sky class fuse together may lead to stop reducing of Loss, and mIoU will stay in a level no matter how epochs train.Just like the fig5 show.  
