@@ -34,3 +34,6 @@ run `python demo.py`
 ## Conclusion
 * The different class group may result in different accuracy, for example, person class and sky class fuse together may lead to stop reducing of Loss, and mIoU will stay in a level no matter how epochs train.Just like the fig4 show.  
 ![stoploss1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/stoploss1.png)
+* Use Adam optimizer could significant increase regression speed. As fig5 show.
+![adamoptimizer1.png](https://github.com/hikaruzzz/instance-semantic-segmentation-pytorch/blob/master/score/adamoptimizer1.png)
+
