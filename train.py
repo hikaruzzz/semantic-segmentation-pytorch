@@ -21,8 +21,8 @@ def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("device = {}".format(device))
     # load data
-    data_loader_train = Cityscapes_Loader(path_root=path_root,split="train",n_classes=8)
-    data_loader_val = Cityscapes_Loader(path_root=path_root,split="val",n_classes=8)
+    data_loader_train = Cityscapes_Loader(path_root=path_root,split="train",n_classes=n_class)
+    data_loader_val = Cityscapes_Loader(path_root=path_root,split="val",n_classes=n_class)
 
     train_loader = data.DataLoader(data_loader_train,batch_size=batch_size,num_workers=16)
     val_loader = data.DataLoader(data_loader_val,batch_size=batch_size,num_workers=16)  # val batch_size=1
@@ -31,6 +31,7 @@ def train():
     assert torch.cuda.is_available(), "先把下面的cuda()删掉，debug阶段，不支持cpu"
     # if torch.cuda.is_available():
     #     torch.backends.cudnn.benchmark = True
+
     pretrain_model = VGGNet(requires_grad=True, remove_fc=True)
     model = FCNs(pretrained_net=pretrain_model, n_class=n_class)
 
@@ -47,7 +48,9 @@ def train():
         optimizer = torch.optim.RMSprop(model.parameters(),lr=learn_rate,momentum=momentum,weight_decay=weight_decay)
     elif optimizer_name == "sgd":
         optimizer = torch.optim.SGD(model.parameters(),lr=learn_rate,momentum=momentum,weight_decay=weight_decay)
-
+    elif optimizer_name == "adam":
+        optimizer = torch.optim.Adam(model.parameters(),lr=learn_rate)
+        
     #criterion = mybasilLoss()
     criterion = torch.nn.BCEWithLogitsLoss()
 

@@ -55,3 +55,64 @@ def get_color_index():
         [119, 11, 32],
     ]
     return colors_index
+
+def get_classes(classes_num):
+    '''
+    合并class ，将一些类别合并成一个class（比如单车，汽车=》vehicle）,缩减classes数量，如现在是35 缩到 8个类
+    详细label的class目录，可以参考 label_changer.py的表格
+    :param classes_num: optional[2,8,20] represent (person&void),(8classes),(20classes) respectively
+    :return:
+    '''
+    if classes_num == 2:
+        # only person & void class
+        transform_classes = np.zeros(35,dtype=np.int)
+        transform_classes[1:25] = 0
+        transform_classes[25:27] = 1
+        transform_classes[27:35] = 0
+        transform_classes[0] = 0
+
+        return transform_classes
+    elif classes_num == 8:
+        transform_classes = np.zeros(35, dtype=np.int)
+        transform_classes[1:8] = 0  # 0-7 -> 1-8 : void
+        transform_classes[8:12] = 1  # 7-11 -> 8-12 :
+        transform_classes[12:18] = 2
+        transform_classes[18:22] = 3
+        transform_classes[22:24] = 4
+        transform_classes[24:25] = 5
+        transform_classes[25:27] = 6
+        transform_classes[27:35] = 7
+        transform_classes[0] = 7  # 这个是train_idx = -1的那个class，归为7类，（占了transform_classes的第一位）后面idx 的都要往后退一位
+
+        return transform_classes
+    elif classes_num == 20:
+        transform_classes = np.zeros(35, dtype=np.int)
+        transform_classes[1:8] = 0  # 0-7 -> 1-8 : void
+        transform_classes[8:9] = 1  # road
+        transform_classes[9] = 2  # sidewalk
+        transform_classes[10] = 0 # parking
+        transform_classes[11] = 0  # rail track
+        transform_classes[12] = 3  # building
+        transform_classes[13] = 4  # wall
+        transform_classes[14] = 5  # fence
+        transform_classes[15:18] = 0  # bridge
+        transform_classes[18] = 6  # pole
+        transform_classes[19] = 0  # polegroup
+        transform_classes[20] = 7  # traffic light
+        transform_classes[21] = 8  # traffic sign
+        transform_classes[22] = 9  # vegetation
+        transform_classes[23] = 10  # terrain
+        transform_classes[24] = 11  # sky
+        transform_classes[25] = 12  # person
+        transform_classes[26] = 13  # rider
+        transform_classes[27] = 14  # car
+        transform_classes[28] = 15  # truck
+        transform_classes[29] = 16  # bus
+        transform_classes[30:32] = 0  # caravan -> void
+        transform_classes[32] = 17  # train
+        transform_classes[33] = 18  # motorcycle
+        transform_classes[34] = 18  # bicycle
+        transform_classes[0] = 19  # license plate -> void
+
+        return transform_classes
+

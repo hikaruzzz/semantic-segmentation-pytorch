@@ -4,14 +4,12 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-from torch.utils import data
-from torch.autograd import Variable
+from PIL import Image
 
 from fcn import VGGNet,FCNs
-from utils import get_color_index
 from config import n_class
 from utils import get_color_index
-from PIL import Image
+
 
 def img_loader(demo_path):
     imgs_path_list = []
@@ -113,7 +111,7 @@ def val():
             rgb_img = index2color(pred[i, :, :])
 
             plt.subplot(2,2,2)
-            plt.title("Semantic Segmentation Predict, mIoU:{}".format(last_best_iou))
+            plt.title("Semantic Segmentation Predict, mIoU:{:.2%}".format(last_best_iou))
             plt.imshow(rgb_img.astype(np.int))
 
             plt.subplot(2,2,3)
@@ -130,5 +128,5 @@ def val():
 
 
 if __name__ == "__main__":
-    load_ckpt_name = "eph_50_iou_58.65%.ckpt.pth"
+    load_ckpt_name = "class8_adam_79.49%.ckpt.pth"
     val()

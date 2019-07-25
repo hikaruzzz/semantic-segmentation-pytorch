@@ -1,4 +1,3 @@
-n_classes = 8
 
 # dataset root path
 #path_root = r"C:\Users\PC\Desktop\CityScapes"
@@ -13,15 +12,15 @@ batch_size = 4
 vaild_device_num = 1  # no used
 
 # hyper paras
-epochs = 10
+epochs = 100
 n_class = 8
 learn_rate = 1.0e-4
-momentum = 0.99
+momentum = 0.9  # 利用了类似与移动指数加权平均的方法对参数进行平滑处理，减少波动幅度（解决SGD波动幅度大）
 weight_decay = 0.0005
-step_size = 50  # decay LR 0.5 every 30 epoch
-gamma = 0.5
+step_size = 100  # decay LR 0.5 every 30 epoch
+gamma = 0.1
 
-optimizer_name = "rmsprop"  # option：['rmsprop','sgd']
+optimizer_name = "adam"  # option：['rmsprop','sgd','adam']
 #criterion = torch.nn.BCEWithLogitsLoss()
 
 is_load_checkpoints = False

@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import torch
 import warnings
 
+import utils
+
 from torch.utils import data
 
 
@@ -46,45 +48,13 @@ class Cityscapes_Loader(data.Dataset):
         self.label_type = label_type
         assert self.__len__() > 0, "Error: not found image in path = {}".format(self.root)
 
-        # 合并class ，将一些类别合并成一个class（比如单车，汽车=》vehicle）,缩减classes数量，如现在是35 缩到 8个类
-        # 详细label的class目录，可以参考 label_changer.py的表格
-        transform_classes = np.zeros(35, dtype=np.int)
-        transform_classes[1:8] = 0  # 0-7 -> 1-8
-        transform_classes[8:12] = 1  # 7-11 -> 8-12
-        transform_classes[12:18] = 2
-        transform_classes[18:22] = 3
-        transform_classes[22:24] = 4
-        transform_classes[24:25] = 5
-        transform_classes[25:27] = 6
-        transform_classes[27:35] = 7
-        transform_classes[0] = 7  # 这个是train_idx = -1的那个class，归为7类，（占了transform_classes的第一位）后面idx 的都要往后退一位
+        #合并class ，将一些类别合并成一个class（比如单车，汽车=》vehicle）,缩减classes数量，如现在是35 缩到 n个类
+        transform_classes = utils.get_classes(n_classes)
+
         self.classes_map = dict(zip(range(-1, 35), transform_classes))
 
         # index与label颜色的调色板，模型输出是某个class的index(size <= class_num)，使用这个调色板转成相应颜色的张量
-        self.colors_index = [
-        [128, 64, 128],
-        [244, 35, 232],
-        [70, 70, 70],
-        [102, 102, 156],
-        [0,200,0],  # nature
-        [0,191,255],  # sky
-        [0,0,255], # human
-        [220, 220, 0], # vehicle
-        [190, 153, 153],
-        [153, 153, 153],
-        [250, 170, 30],
-        [107, 142, 35],
-        [152, 251, 152],
-        [0, 130, 180],
-        [220, 20, 60],
-        [255, 0, 0],
-        [0, 0, 142],
-        [0, 0, 70],
-        [0, 60, 100],
-        [0, 80, 100],
-        [0, 0, 230],
-        [119, 11, 32],
-    ]
+        self.colors_index = utils.get_color_index()
 
     def __len__(self):
         '''
@@ -133,6 +103,12 @@ class Cityscapes_Loader(data.Dataset):
         for c in range(self.n_classes):
             target[c][label == c] = 1
 
+        # new_target = np.zeros([self.H,self.W],dtype=np.int32)
+        # for c in range(self.n_classes):
+        #     new_target[target[c] == 1] = c
+        #
+        # plt.imshow(new_target)
+        # plt.show()
         img = torch.from_numpy(img).float()
         label = torch.from_numpy(label).float()
         target = torch.from_numpy(target).float()
@@ -195,15 +171,15 @@ def forDebugOnly():
     path_root = r"C:\Users\PC\Desktop\CityScapes"
 
     split = "train"
-    n_classes = 8
+    n_classes = 20
     c_loader = Cityscapes_Loader(path_root,split,n_classes,is_transform=False)
     print("list len:",c_loader.__len__())
-    trainloader = data.DataLoader(c_loader, batch_size=1, num_workers=0)
+    trainloader = data.DataLoader(c_loader, batch_size=1, num_workers=1)
     for i, data_samples in enumerate(trainloader):
         imgs, labels, target = data_samples
         plt.figure(i)
         plt.subplot(1,2,1)
-        plt.imshow(np.array(np.transpose(imgs[0],[1,2,0]),dtype=np.int))
+        plt.imshow(np.array(np.transpose(imgs[0],[1,2,0])*255.,dtype=np.int))
         plt.subplot(1,2,2)
         plt.imshow(np.array(c_loader.index2color(labels[0]),dtype=np.int))
     plt.show()
